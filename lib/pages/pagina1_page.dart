@@ -9,7 +9,9 @@ class Pagina1Page extends StatelessWidget {
     Stream<Usuario?> user = usuarioServices.streamUser;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pagina 1"),
+        title: const Text("Singleton"),
+        backgroundColor: Colors.amber,
+        elevation: 0,
       ),
       body: StreamBuilder(
         stream: user,
@@ -20,6 +22,7 @@ class Pagina1Page extends StatelessWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
         child: const Icon(Icons.accessibility_new),
         onPressed: () =>
             Navigator.pushNamed(context, 'pagina2', arguments: user),

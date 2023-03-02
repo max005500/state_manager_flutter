@@ -12,6 +12,7 @@ class Pagina2Page extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Stream(),
+        elevation: 0,
       ),
       body: Center(
         child: Column(
