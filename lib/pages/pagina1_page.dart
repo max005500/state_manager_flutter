@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:state_manager/models/usuarios.dart';
+import 'package:state_manager/services/usuario_service.dart';
 
 class Pagina1Page extends StatelessWidget {
   const Pagina1Page({super.key});
-
   @override
   Widget build(BuildContext context) {
+    Stream<Usuario?> user = usuarioServices.streamUser;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pagina 1"),
       ),
-      body: InformacionUsuario(),
+      body: StreamBuilder(
+        stream: user,
+        builder: (BuildContext context, AsyncSnapshot<Usuario?> snapshot) {
+          return snapshot.hasData
+              ? InformacionUsuario(usuario: snapshot.data)
+              : const Center(child: Text('no data'));
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.accessibility_new),
-        onPressed: () => Navigator.pushNamed(context, 'pagina2'),
+        onPressed: () =>
+            Navigator.pushNamed(context, 'pagina2', arguments: user),
       ),
     );
   }
 }
 
 class InformacionUsuario extends StatelessWidget {
-  const InformacionUsuario({
+  Usuario? usuario;
+  InformacionUsuario({
+    required this.usuario,
     super.key,
   });
 
@@ -31,41 +43,45 @@ class InformacionUsuario extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
+        children: [
+          const Text(
             "General",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             title: Text(
-              "nombre:",
+              "nombre: ${usuario?.nombre}",
             ),
           ),
+          // if (usuario.profesiones != null)
           ListTile(
             title: Text(
-              "edad:",
+              "edad: ${usuario?.edad}",
             ),
           ),
-          Text(
+          const Text(
             "Profesiones",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
-          ListTile(
-            title: Text(
-              "profesion 1:",
-            ),
-          ),
-          ListTile(
-            title: Text(
-              "profesion2:",
+          const Divider(),
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (_, __) => const SizedBox(
+                height: 1,
+              ),
+              itemBuilder: (_, index) => ListTile(
+                title: Text(
+                  "profesion ${index + 1}: ${usuario?.profesiones?[index]}",
+                ),
+              ),
+              itemCount: usuario?.profesiones?.length ?? 0,
             ),
           ),
         ],

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:state_manager/models/usuarios.dart';
+import 'package:state_manager/services/usuario_service.dart';
+
 class Pagina2Page extends StatelessWidget {
   const Pagina2Page({super.key});
 
@@ -8,15 +11,30 @@ class Pagina2Page extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text("Pagina 2"),
+        title: const Stream(),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            CustomButtom(texto: 'Establecer Usuario'),
-            CustomButtom(texto: 'Cambiar Edad'),
-            CustomButtom(texto: 'Anadir Profesion'),
+          children: [
+            CustomButtom(
+              texto: 'Establecer Usuario',
+              press: () {
+                final newUser = Usuario(
+                  edad: 25,
+                  profesiones: ['electricista', 'gasfiter'],
+                  nombre: 'juan',
+                );
+                usuarioServices.cargarUsuario(newUser);
+              },
+            ),
+            CustomButtom(
+              texto: 'Cambiar Edad',
+              press: () {
+                usuarioServices.cambiarEdad(35);
+              },
+            ),
+            CustomButtom(texto: 'Anadir Profesion', press: () => null),
           ],
         ),
       ),
@@ -24,10 +42,31 @@ class Pagina2Page extends StatelessWidget {
   }
 }
 
+class Stream extends StatelessWidget {
+  const Stream({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: usuarioServices.streamUser,
+      builder: (context, AsyncSnapshot<Usuario?> snapshot) {
+        return usuarioServices.usuario != null
+            ? Text('${usuarioServices.usuario?.nombre}')
+            : const Text('Pagina 2');
+      },
+    );
+  }
+}
+
+// ignore: must_be_immutable
 class CustomButtom extends StatelessWidget {
   final String texto;
-  const CustomButtom({
+  void Function() press;
+  CustomButtom({
     required this.texto,
+    required this.press,
     super.key,
   });
 
@@ -39,7 +78,7 @@ class CustomButtom extends StatelessWidget {
       ),
       color: Colors.amber,
       elevation: 0,
-      onPressed: () => {},
+      onPressed: press,
       child: Text(
         texto,
         style: const TextStyle(
