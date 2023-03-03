@@ -11,14 +11,21 @@ class Pagina1Page extends StatelessWidget {
     final UsuarioService usuarioService = Provider.of<UsuarioService>(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Pagina 1"),
+        title: const Center(child: Text("Provider")),
+        backgroundColor: Colors.indigo,
+        actions: [
+          IconButton(
+              onPressed: () => usuarioService.removeUser(),
+              icon: Icon(Icons.refresh))
+        ],
       ),
       body: usuarioService.usuario != null
           ? InformacionUsuario(user: usuarioService.usuario)
-          : Center(child: Text('no info')),
+          : const Center(child: Text('no info')),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.accessibility_new),
         onPressed: () => Navigator.pushNamed(context, 'pagina2'),
+        backgroundColor: Colors.indigo,
       ),
     );
   }
@@ -39,41 +46,44 @@ class InformacionUsuario extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text(
+        children: [
+          const Text(
             "General",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             title: Text(
-              "nombre:",
+              "nombre: ${user?.nombre}",
             ),
           ),
           ListTile(
             title: Text(
-              "edad:",
+              "edad: ${user?.edad}",
             ),
           ),
-          Text(
+          const Text(
             "Profesiones",
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
-          ListTile(
-            title: Text(
-              "profesion 1:",
-            ),
-          ),
-          ListTile(
-            title: Text(
-              "profesion2:",
+          const Divider(),
+          Expanded(
+            child: ListView.separated(
+              separatorBuilder: (_, __) => const SizedBox(
+                height: 1,
+              ),
+              itemBuilder: (_, index) => ListTile(
+                title: Text(
+                  "profesion ${index + 1}: ${user?.profesiones[index]}",
+                ),
+              ),
+              itemCount: user?.profesiones.length ?? 0,
             ),
           ),
         ],
