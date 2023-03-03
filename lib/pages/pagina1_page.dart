@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:state_manager/models/usuarios.dart';
+import 'package:state_manager/services/usuario_service.dart';
 
 class Pagina1Page extends StatelessWidget {
   const Pagina1Page({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final UsuarioService usuarioService = Provider.of<UsuarioService>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Pagina 1"),
       ),
-      body: InformacionUsuario(),
+      body: usuarioService.usuario != null
+          ? InformacionUsuario(user: usuarioService.usuario)
+          : Center(child: Text('no info')),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.accessibility_new),
         onPressed: () => Navigator.pushNamed(context, 'pagina2'),
@@ -19,7 +25,9 @@ class Pagina1Page extends StatelessWidget {
 }
 
 class InformacionUsuario extends StatelessWidget {
-  const InformacionUsuario({
+  Usuario? user;
+  InformacionUsuario({
+    required this.user,
     super.key,
   });
 
